@@ -1,11 +1,13 @@
 contacts = []
+N = 4
+Z = 2
 while True:
     cmd = input("Enter command: quit, add, contacts, find or filter ").strip().lower()
     if cmd == "quit":
         break
+
     elif cmd == "add":
         name = input("Enter your name: ").strip()
-
         if not 2 <= len(name) <= 30:
             print("Name from 2 to 30 symbols")
             continue
@@ -22,19 +24,30 @@ while True:
             continue
         contacts.append([name, phone])
         print(f"Имя {name} добавлено в записную книжку")
+
     elif cmd == "contacts":
         print("Всего контактов:\n", len(contacts))
         for i, contact in enumerate(contacts, 1):
-            print(f"{i}. {contact[0]} - {contact[1]}")
+            start = contact[1][:N]
+            end = contact[1][-Z:]
+            stealth = len(contact[1][N:-Z]) * "*"
+            masked_phone = start + stealth + end
+            print(f"{i}. {contact[0]} - {masked_phone}")
+
     elif cmd == "find":
         query = input("Enter word: ").strip().lower()
         is_any_founded = False
         for name, phone in contacts:
             if query in name.lower() or query in phone:
-                print(name, "-", phone)
+                start = phone[:N]
+                end = phone[-Z:]
+                stealth = len(phone[N:-Z]) * "*"
+                masked_phone = start + stealth + end
+                print(name, "-", masked_phone)
                 is_any_founded = True
         if not is_any_founded:
             print("Nothing found, try again.")
+
     elif cmd == "filter":
         print("Filters:: 1 - first letter")
         kind = input("Filter: ").strip()
@@ -43,11 +56,16 @@ while True:
             count = 0
             for name, phone in contacts:
                 if name[:1] == letter:
-                    print(name, "-", phone)
+                    start = phone[:N]
+                    end = phone[-Z:]
+                    stealth = len(phone[N:-Z]) * "*"
+                    masked_phone = start + stealth + end
+                    print(name, "-", masked_phone)
                     count += 1
             print("Find:", count)
         else:
             print("Nothing found, try again.")
+
     else:
         print("Invalid command. Try again.")
 
